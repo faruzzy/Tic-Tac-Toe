@@ -1,0 +1,67 @@
+header {
+	font-size: 50px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+body {
+	font-size: 30px;
+	width: 90%;
+	height: auto;
+	margin: 0 auto;
+}
+
+.container {
+	width: 700px;
+	margin: 0 auto;
+}
+
+.row1 {
+	display: block;
+}
+
+.row2 {
+	display: block;
+}
+
+.row3 {
+	display: block;
+}
+
+.row1 .column1Row1 {
+	border-left: 1px solid gray;
+}
+
+.row2 .column1Row2 {
+	border-left: 1px solid gray;
+}
+
+.row3 .column1Row3 {
+	border-left: 1px solid gray;
+}
+
+.row1 .column1Row1, .row1 .column2Row1, .row1 .column3Row1 {
+	width: 200px;
+	height: 200px;
+	border-right: 1px solid gray;
+	border-bottom: 1px solid gray;
+	border-top: 1px solid gray;
+	float: left;
+}
+
+.row2 .column1Row2, .row2 .column2Row2, .row2 .column3Row2 {
+	width: 200px;
+	height: 200px;
+	border-right: 1px solid gray;
+	border-bottom: 1px solid gray;
+	float: left;
+}
+
+.row3 .column1Row3, .row3 .column2Row3, .row3 .column3Row3 {
+	width: 200px;
+	height: 200px;
+	border-right: 1px solid gray;
+	border-bottom: 1px solid gray;
+	float: left;
+}
