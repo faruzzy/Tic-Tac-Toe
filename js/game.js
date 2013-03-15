@@ -8,7 +8,7 @@
  * 
  * This is was a side project that I started working on just for fun.
  * Use it as it pleases you!
- * Pull request are extremely welcome
+ * Pull requests are extremely welcome
  */
 
 (function($) {
@@ -28,7 +28,7 @@
 	}
 
 	var squares = $('.row1 div, .row2 div, .row3 div');
-	var colorCount = 0;
+	var markCount = 0;
 	var lastRowClicked;
 
 	var game = {
@@ -40,26 +40,34 @@
 			var _self = this ;
 
 			$(squares).on('click', function(e, param) {
-				if ( colorCount > 0 && $(this).css('background') !== "" ) { //if the square is not selected yet
-					var response = _self.getCurrentPlayerMark(colorCount);
-					$(this).css('color', response[0])
-					.text(response[1]);
-					colorCount++;
-
-					if ( param === undefined ) { // the computer didn't initiate the move
-						_self.computerMove();
-					}
-				} else if ( colorCount === 0 ) {
-					var response = _self.getCurrentPlayerMark(colorCount);
+				if ( markCount > 0 && $(this).text() === "" ) { //if the square is not selected yet
+					var response = _self.getCurrentPlayerMark(markCount);
 					$(this).css('color', response[0])
 						.addClass('filled')
 						.text(response[1]);
 
-					if ( param ) {
-						lastRowClicked = $(this).parent();
-					}
+					markCount++;
 
-					colorCount++;
+					lastRowClicked = $(this).parent();
+					if ( param === undefined ) { // the computer didn't initiate the move
+						_self.computerMove();
+					}
+				} else if ( markCount === 0 ) {
+					var response = _self.getCurrentPlayerMark(markCount);
+					$(this).css('color', response[0])
+						.addClass('filled')
+						.text(response[1]);
+
+					markCount++;
+
+					lastRowClicked = $(this).parent();
+					if ( param === undefined ) { // the user was the first player, computer turn
+						_self.computerMove();
+					}
+				} else if ( $(this).text() !== "" ) {
+					while ( $(this).text() !== "" ) {
+						$(squares).click();
+					}
 				}
 
 				log('click', e.target);
@@ -157,8 +165,8 @@
 		 * @param {string} the Color Counter
 		 * @returns {array} an that contains the color and the mark
 		 */
-		getCurrentPlayerMark: function(colorCount) {
-			return (colorCount % 2 === 0) ? ['red', 'X'] : ['blue', 'O'];
+		getCurrentPlayerMark: function(markCount) {
+			return (markCount % 2 === 0) ? ['red', 'X'] : ['blue', 'O'];
 		}
 
 	};
