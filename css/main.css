@@ -48,6 +48,9 @@ body {
 	border-bottom: 1px solid gray;
 	border-top: 1px solid gray;
 	float: left;
+	text-align: center;
+	font-size: 80px;
+	line-height: 180px;
 }
 
 .row2 .column1Row2, .row2 .column2Row2, .row2 .column3Row2 {
@@ -56,6 +59,9 @@ body {
 	border-right: 1px solid gray;
 	border-bottom: 1px solid gray;
 	float: left;
+	text-align: center;
+	font-size: 80px;
+	line-height: 180px;
 }
 
 .row3 .column1Row3, .row3 .column2Row3, .row3 .column3Row3 {
@@ -64,4 +70,7 @@ body {
 	border-right: 1px solid gray;
 	border-bottom: 1px solid gray;
 	float: left;
+	text-align: center;
+	font-size: 80px;
+	line-height: 180px;
 }

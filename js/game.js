@@ -41,15 +41,19 @@
 
 			$(squares).on('click', function(e, param) {
 				if ( colorCount > 0 && $(this).css('background') !== "" ) { //if the square is not selected yet
-					$(this).css('background', _self.getColor(colorCount));
+					var response = _self.getColor(colorCount);
+					$(this).css('color', response[0])
+					.text(response[1]);
 					colorCount++;
 
 					if ( param === undefined ) { // the computer didn't initiate the move
 						_self.computerMove();
 					}
 				} else if ( colorCount === 0 ) {
-					$(this).css('background', _self.getColor(colorCount))
-						.addClass('filled');
+					var response = _self.getColor(colorCount);
+					$(this).css('color', response[0])
+						.addClass('filled')
+						.text(response[1]);
 
 					if ( param ) {
 						lastRowClicked = $(this).parent();
@@ -140,7 +144,7 @@
 		 * @returns {string} the color
 		 */
 		getColor: function(colorCount) {
-			return (colorCount % 2 === 0) ? 'red' : 'blue';
+			return (colorCount % 2 === 0) ? ['red', 'X'] : ['blue', 'O'];
 		}
 
 	};
