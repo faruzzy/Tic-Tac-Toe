@@ -41,7 +41,7 @@
 
 			$(squares).on('click', function(e, param) {
 				if ( colorCount > 0 && $(this).css('background') !== "" ) { //if the square is not selected yet
-					var response = _self.getColor(colorCount);
+					var response = _self.getCurrentPlayerMark(colorCount);
 					$(this).css('color', response[0])
 					.text(response[1]);
 					colorCount++;
@@ -50,7 +50,7 @@
 						_self.computerMove();
 					}
 				} else if ( colorCount === 0 ) {
-					var response = _self.getColor(colorCount);
+					var response = _self.getCurrentPlayerMark(colorCount);
 					$(this).css('color', response[0])
 						.addClass('filled')
 						.text(response[1]);
@@ -126,6 +126,19 @@
 			$(squares[i]).trigger('click', ['COMP']);
 		},
 
+		/**
+		 * Looks at a row squares, select one of the three squares
+		 * if the square has already been clicked, it selects another
+		 * one, and returns its index
+		 * @param {array}, an array containing 3 indices that represent
+		 * the current state of the row. 
+		 * @example: 
+		 * [1, 0, 0], first row is already clicked, second and third row are not 
+		 * clicked yet.
+		 * @param {integer}, min, the minimal value to randomly pick from (inclusive)
+		 * @param {integer}, max, the maximal value to randomly pick from (inclusive)
+		 * @returns {integer}, the selected square index
+		 */
 		determineSquare: function(rowArray, min, max) {
 			var i = getRandomInt(min, max);
 			var filled = rowArray[i];
@@ -138,12 +151,13 @@
 		},
 
 		/**
-		 * Returns the user color, the first player will be red
-		 * the second player color will be blue
+		 * Returns the current player color and mark, 
+		 * the first player will be red with a cross 'X'
+		 * the second player color will be blue with circle 'O'
 		 * @param {string} the Color Counter
-		 * @returns {string} the color
+		 * @returns {array} an that contains the color and the mark
 		 */
-		getColor: function(colorCount) {
+		getCurrentPlayerMark: function(colorCount) {
 			return (colorCount % 2 === 0) ? ['red', 'X'] : ['blue', 'O'];
 		}
 
