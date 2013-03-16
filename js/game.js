@@ -40,7 +40,7 @@
 			var _self = this ;
 
 			$(squares).on('click', function(e, param) {
-				if ( markCount > 0 && $(this).text() === "" ) { //if the square is not selected yet
+				if ( $(this).text() === "" ) { //if the square is not selected yet
 					var response = _self.getCurrentPlayerMark(markCount);
 					$(this).css('color', response[0])
 						.addClass('filled')
@@ -50,26 +50,15 @@
 
 					lastRowClicked = $(this).parent();
 					if ( param === undefined ) { // the computer didn't initiate the move
-						_self.computerMove();
-					}
-				} else if ( markCount === 0 ) {
-					var response = _self.getCurrentPlayerMark(markCount);
-					$(this).css('color', response[0])
-						.addClass('filled')
-						.text(response[1]);
-
-					markCount++;
-
-					lastRowClicked = $(this).parent();
-					if ( param === undefined ) { // the user was the first player, computer turn
-						_self.computerMove();
+						setTimeout(function() {
+							_self.computerMove();
+						}, 1000);
 					}
 				} else if ( $(this).text() !== "" ) {
 					while ( $(this).text() !== "" ) {
 						$(squares).click();
 					}
 				}
-
 				log('click', e.target);
 			});
 
