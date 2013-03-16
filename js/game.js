@@ -34,11 +34,21 @@
 	var game = {
 		/**
 		 * Entry point of the game
-		 * Register most Event Handlers
 		 */
 		start: function() {
 			var _self = this ;
+			_self.registerEventHandlers();
 
+			log('Electing First Player..');
+			_self.electFirstPlayer();
+		},
+
+		/**
+		 * Register all event handlers to their respective
+		 * DOM elements
+		 */
+		registerEventHandlers: function() {
+			var _self = this;
 			$(squares).on('click', function(e, param) {
 				if ( $(this).text() === "" ) { //if the square is not selected yet
 					var response = _self.getCurrentPlayerMark(markCount);
@@ -61,9 +71,6 @@
 				}
 				log('click', e.target);
 			});
-
-			log('Electing First Player..');
-			_self.electFirstPlayer();
 		},
 
 		/**
