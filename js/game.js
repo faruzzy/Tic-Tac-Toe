@@ -12,6 +12,12 @@
  */
 
 (function($) {
+	var squares = $('.row1 div, .row2 div, .row3 div');
+	var markCount = 0;
+	var lastRowClicked;
+	var computerMove = 0;
+	var playerMove = 0;
+
 	log('-------Tic Tac Toe--------');
 	log('       Game Start         ');
 	log('--------------------------');
@@ -27,9 +33,20 @@
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
-	var squares = $('.row1 div, .row2 div, .row3 div');
-	var markCount = 0;
-	var lastRowClicked;
+	/**
+	 * Determines wether an array contains a given value
+	 * @param {array}, the array to be searched
+	 * @param {integer|string}, the value we are looking for
+	 * @returns {boolean}, true if it was found, otherwise false
+	 */
+	function inArray(array, needle) {
+		for ( var i = 0 in array ) {
+			if ( array[i] === needle )
+				return true;
+		}
+
+		return false;
+	}
 
 	var game = {
 		/**
@@ -51,6 +68,12 @@
 			var _self = this;
 			$(squares).on('click', function(e, param) {
 				if ( $(this).text() === "" ) { //if the square is not selected yet
+					if ( param === 'COMP' ) {
+						computerMove++;
+					} else {
+						playerMove++;
+					}
+
 					var response = _self.getCurrentPlayerMark(markCount);
 					$(this).css('color', response[0])
 						.addClass('filled')
@@ -63,6 +86,7 @@
 						setTimeout(function() {
 							_self.computerMove();
 						}, 1000);
+						computerMove++;
 					}
 				} else if ( $(this).text() !== "" ) {
 					while ( $(this).text() !== "" ) {
@@ -98,7 +122,7 @@
 			//var filled;
 			var i;
 
-			if ( lastRowClicked && ( lastRowClicked !== $(this).parent() ) ) {
+			if ( lastRowClicked ) {
 				success = true;
 				$(lastRowClicked.find('div')).each(function(k, v) {
 					var filled = $(this).hasClass('filled');
@@ -114,16 +138,35 @@
 			if ( !success ) { // the computer can randomly click a square
 				i = getRandomInt(0, 8); // square index
 			} else { // let's think a little
-				if ( $(lastRowClicked[0]).is('.row1') ) {
-					i = _self.determineSquare(rowArray, 0, 2);
-				}
+				var approach = getRandomInt(0, 1);
+				if ( approach ) { // either choose to do the next move in the same row
+					if ( $(lastRowClicked[0]).is('.row1') ) {
+						i = _self.determineSquare(rowArray, 0, 2);
+					}
 
-				if ( $(lastRowClicked[0]).is('.row2') ) {
-					i = _self.determineSquare(rowArray, 3, 5);
-				}
+					if ( $(lastRowClicked[0]).is('.row2') ) {
+						i = _self.determineSquare(rowArray, 3, 5);
+					}
 
-				if ( $(lastRowClicked[0]).is('.row3') ) {
-					i = _self.determineSquare(rowArray, 6, 8);
+					if ( $(lastRowClicked[0]).is('.row3') ) {
+						i = _self.determineSquare(rowArray, 6, 8);
+					}
+				} else {
+					if ( $(lastRowClicked[0]).is('.row1') ) {
+						i = _self.determineSquare(rowArray, 3, 8);
+					}
+
+					if ( $(lastRowClicked[0]).is('.row2') ) {
+						i = _self.determineSquare(rowArray, 0, 8);
+						var exclude = [3, 4, 5];
+						while ( inArray(exclude, i) ) {
+							i = _self.determineSquare(rowArray, 0, 8);
+						}
+					}
+
+					if ( $(lastRowClicked[0]).is('.row3') ) {
+						i = _self.determineSquare(0, 5);
+					}
 				}
 			}
 
