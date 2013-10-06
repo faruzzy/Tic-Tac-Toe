@@ -2,10 +2,10 @@
  * @summary 	Tic Tac Toe
  * @description Quick and Dirty Game Implementation of the Tic Tac Toe Game
  * @version 	0.0.1
- * @file 
+ * @file
  * @author 		Roland Pangu
  * @contact 	rolandpangu@outlook.com
- * 
+ *
  * This is was a side project that I started working on just for fun.
  * Use it as it pleases you!
  * Pull requests are extremely welcome
@@ -40,7 +40,7 @@
 	 * @returns {boolean}, true if it was found, otherwise false
 	 */
 	function inArray(array, needle) {
-		for ( var i = 0 in array ) {
+                for ( var i in array ) {
 			if ( array[i] === needle )
 				return true;
 		}
@@ -178,9 +178,9 @@
 		 * if the square has already been clicked, it selects another
 		 * one, and returns its index
 		 * @param {array}, an array containing 3 indices that represent
-		 * the current state of the row. 
-		 * @example: 
-		 * [1, 0, 0], first row is already clicked, second and third row are not 
+                 * the current state of the row.
+                 * @example:
+                 * [1, 0, 0], first row is already clicked, second and third row are not
 		 * clicked yet.
 		 * @param {integer}, min, the minimal value to randomly pick from (inclusive)
 		 * @param {integer}, max, the maximal value to randomly pick from (inclusive)
@@ -198,7 +198,7 @@
 		},
 
 		/**
-		 * Returns the current player color and mark, 
+                 * Returns the current player color and mark,
 		 * the first player will be red with a cross 'X'
 		 * the second player color will be blue with circle 'O'
 		 * @param {string} the Color Counter
