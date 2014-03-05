@@ -13,17 +13,19 @@
 
 (function($) {
 	var squares = $('.row1 div, .row2 div, .row3 div');
+	var rows = $('.row1, .row2, .row3');
 	var markCount = 0;
 	var lastRowClicked;
 	var computerMove = 0;
 	var playerMove = 0;
+	var isOver = false;
 
 	log('-------Tic Tac Toe--------');
 	log('       Game Start         ');
 	log('--------------------------');
 
     /**
-     * Returns a Random number in the range between the 
+     * Returns a Random number in the range between the
      * minimum and max value (both inclusive)
      * @param {integer} min, the minimum value
      * @param {integer} max, the maximum value
@@ -40,7 +42,7 @@
 	 * @returns {boolean}, true if it was found, otherwise false
 	 */
 	function inArray(array, needle) {
-                for ( var i in array ) {
+		for ( var i in array ) {
 			if ( array[i] === needle )
 				return true;
 		}
@@ -60,6 +62,35 @@
 			_self.electFirstPlayer();
 		},
 
+		/* Determines wheter the game is over
+		 * by looking at the 3 consecutive square rule
+		 */
+		isGameOver: function() {
+			var rowCounter = 0;
+			var success = false;
+
+			for(var i in rows) {
+				if (success) {
+					isOver = true;
+					break;
+				}
+
+				for (var k = 0; k < i.length; k++) {
+					if( $(i[k]).text() ) {
+						rowCounter++;
+					}
+
+					if(k === i.length) {
+						if (rowCounter === 3) {
+							success = true;
+						}
+					}
+				}
+			}
+
+			return isOver;
+		},
+
 		/**
 		 * Register all event handlers to their respective
 		 * DOM elements
@@ -67,7 +98,8 @@
 		registerEventHandlers: function() {
 			var _self = this;
 			$(squares).on('click', function(e, param) {
-				if ( $(this).text() === "" ) { //if the square is not selected yet
+				_self.isGameOver();
+				if ( $(this).text() === '' ) { //if the square is not selected yet
 					if ( param === 'COMP' ) {
 						computerMove++;
 					} else {
@@ -88,12 +120,14 @@
 						}, 1000);
 						computerMove++;
 					}
-				} else if ( $(this).text() !== "" ) {
-					while ( $(this).text() !== "" ) {
-						$(squares).click();
-					}
+				} else if ( $(this).text() !== '' ) {
+					var i = _self.determineSquare();
+					$(squares[i]).click();
 				}
 				log('click', e.target);
+				if ( isOver ) {
+					$('.isOver').show();
+				}
 			});
 		},
 
@@ -165,7 +199,7 @@
 					}
 
 					if ( $(lastRowClicked[0]).is('.row3') ) {
-						i = _self.determineSquare(0, 5);
+						i = _self.determineSquare(rowArray, 0, 5);
 					}
 				}
 			}
@@ -178,9 +212,9 @@
 		 * if the square has already been clicked, it selects another
 		 * one, and returns its index
 		 * @param {array}, an array containing 3 indices that represent
-                 * the current state of the row.
-                 * @example:
-                 * [1, 0, 0], first row is already clicked, second and third row are not
+		 * the current state of the row.
+		 * @example:
+		 * [1, 0, 0], first row is already clicked, second and third row are not
 		 * clicked yet.
 		 * @param {integer}, min, the minimal value to randomly pick from (inclusive)
 		 * @param {integer}, max, the maximal value to randomly pick from (inclusive)
@@ -198,7 +232,7 @@
 		},
 
 		/**
-                 * Returns the current player color and mark,
+		 * Returns the current player color and mark,
 		 * the first player will be red with a cross 'X'
 		 * the second player color will be blue with circle 'O'
 		 * @param {string} the Color Counter
