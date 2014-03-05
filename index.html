@@ -27,7 +27,7 @@
 				<div class="column3Row3"></div>
 			</div>
 		</div>
-        <script>var log = function(data) { console.log(data); };</script>
+        <script> var log = function() {if ( console ) console.log.apply(console, arguments); }; </script>
         <script src="js/lib/jquery.js"></script>
         <script src="js/game.js"></script>
 	</body>
