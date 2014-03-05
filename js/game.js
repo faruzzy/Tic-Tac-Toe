@@ -39,17 +39,6 @@
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
-	/**
-	 * Determines wether an array contains a given value
-	 * @param {array}, the array to be searched
-	 * @param {integer|string}, the value we are looking for
-	 * @returns {boolean}, true if it was found, otherwise false
-	 */
-	function inArray(array, needle) {
-		if ( array.indexOf(needle) === -1 ) return false;
-		return true;
-	}
-
 	var game = {
 		/**
 		 * Entry point of the game
@@ -87,7 +76,7 @@
 				if ( $(lastRowClicked[0]).is('.row2') ) {
 					return _self.determineSquare(rowArray, 0, 8);
 					var exclude = [3, 4, 5];
-					while ( inArray(exclude, i) ) {
+					while ( exclude.indexOf(i) !== -1 ) {
 						return _self.determineSquare(rowArray, 0, 8);
 					}
 				}
