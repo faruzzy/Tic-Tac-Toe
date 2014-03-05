@@ -19,7 +19,7 @@
 	var computerMove = 0;
 	var playerMove = 0;
 	var isOver = false;
-	var DEBUG = true;
+	var DEBUG = false;
 	var rowArray = [];
 
 	if (DEBUG) {
