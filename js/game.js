@@ -110,7 +110,7 @@
 		 */
 		registerEventHandlers: function() {
 			var _self = this;
-			$(squares).on('click', function(e, param) {
+			$(squares).on('click', function(e, data) {
 				if ( !isOver ) {
 					if ( $(this).text() === '' ) { //if the square is not selected yet
 
@@ -133,7 +133,9 @@
 
 						lastRowClicked = $(this).parent();
 
-						if ( param === undefined ) { // the computer didn't initiate the move
+						// the computer didn't initiate the move
+						// next move is the computer
+						if ( data === undefined ) { 
 							setTimeout(function() {
 								_self.computerMove();
 							}, 1000);
@@ -174,25 +176,11 @@
 		/**
 		 * Move initiated by the computer
 		 */
-		computerMove: function(player) {
+		computerMove: function() {
 			var _self = this;
-			var success = false;
-			var i;
+			var i = ( lastRowClicked ) ? getRandomInt(0, 8) : _self.select();
 
-			if ( lastRowClicked ) {
-				success = true;
-				$(lastRowClicked.find('div')).each(function(k, v) {
-					var filled = $(this).hasClass('filled');
-				});
-			}
-
-			if ( !success ) { // the computer can randomly click a square
-				i = getRandomInt(0, 8); // square index
-			} else { // let's think a little
-				i = _self.select();
-			}
-
-			$(squares[i]).trigger('click');
+			$(squares[i]).trigger('click', ['COMP']);
 		},
 
 		/**
