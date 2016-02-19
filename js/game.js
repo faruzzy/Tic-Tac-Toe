@@ -16,8 +16,7 @@
 	var rows = $('.row1, .row2, .row3');
 	var markCount = 0;
 	var lastRowClicked;
-	var computerMove = 0;
-	var playerMove = 0;
+	var moveCount = 0;
 	var isOver = false;
 	var DEBUG = false;
 	var rowArray = [];
@@ -57,52 +56,52 @@
 			var approach = getRandomInt(0, 1);
 			var _self = this;
 			if ( approach ) { // either choose to do the next move in the same row
-				if ( $(lastRowClicked[0]).is('.row1') ) {
+				if ( lastRowClicked.is('.row1') ) {
 					return _self.determineSquare(rowArray, 0, 2);
 				}
 
-				if ( $(lastRowClicked[0]).is('.row2') ) {
+				if ( lastRowClicked.is('.row2') ) {
 					return _self.determineSquare(rowArray, 3, 5);
 				}
 
-				if ( $(lastRowClicked[0]).is('.row3') ) {
+				if ( lastRowClicked.is('.row3') ) {
 					return _self.determineSquare(rowArray, 6, 8);
 				}
 			} else { // or in another row
-				if ( $(lastRowClicked[0]).is('.row1') ) {
+				if ( lastRowClicked.is('.row1') ) {
 					return _self.determineSquare(rowArray, 3, 8);
 				}
 
-				if ( $(lastRowClicked[0]).is('.row2') ) {
-					return _self.determineSquare(rowArray, 0, 8);
+				// TODO: I see what I was thinking here 
+				// but this logic is not the best.. 
+				if ( lastRowClicked.is('.row2') ) {
 					var exclude = [3, 4, 5];
-					while ( exclude.indexOf(i) !== -1 ) {
-						return _self.determineSquare(rowArray, 0, 8);
-					}
+					var i;
+					do {
+						i = _self.determineSquare(rowArray, 0, 8);
+					} while ( exclude.indexOf(i) > -1 );
 				}
 
-				if ( $(lastRowClicked[0]).is('.row3') ) {
+				if ( lastRowClicked.is('.row3') ) {
 					return _self.determineSquare(rowArray, 0, 5);
 				}
 			}
 		},
+
 		/* Determines wheter the game is over
 		 * by looking at the 3 consecutive square rule
 		 */
 		checkGameOver: function() {
-			if ( $(squares[0]).text() && $(squares[1]).text() && $(squares[2]).text() ) { isOver = true; return; }
+			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(1).textContent && squares.get(1).textContent === squares.get(2).textContent ) { isOver = true; return; }
+			if ( squares.get(3).textContent !== '' && squares.get(3).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(5).textContent ) { isOver = true; return; }
+			if ( squares.get(6).textContent !== '' && squares.get(6).textContent === squares.get(7).textContent && squares.get(7).textContent === squares.get(8).textContent ) { isOver = true; return; }
 
-			if ( $(squares[3]).text() && $(squares[4]).text() && $(squares[5]).text() ) { isOver = true; return; }
-			if ( $(squares[6]).text() && $(squares[7]).text() && $(squares[8]).text() ) { isOver = true; return; }
+			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(3).textContent && squares.get(3).textContent === squares.get(6).textContent ) { isOver = true; return; }
+			if ( squares.get(1).textContent !== '' && squares.get(1).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(7).textContent ) { isOver = true; return; }
+			if ( squares.get(2).textContent !== '' && squares.get(2).textContent === squares.get(5).textContent && squares.get(5).textContent === squares.get(8).textContent ) { isOver = true; return; }
 
-			if ( $(squares[0]).text() && $(squares[3]).text() && $(squares[6]).text() ) { isOver = true; return; }
-			if ( $(squares[1]).text() && $(squares[4]).text() && $(squares[7]).text() ) { isOver =  true; return; }
-			if ( $(squares[1]).text() && $(squares[4]).text() && $(squares[7]).text() ) { isOver = true; return; }
-
-			if ( $(squares[0]).text() && $(squares[4]).text() && $(squares[8]).text() ) { isOver = true; return; }
-			if ( $(squares[2]).text() && $(squares[4]).text() && $(squares[6]).text() ) { isOver = true; return; }
-
-			isOver = false;
+			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(8).textContent ) { isOver = true; return; }
+			if ( squares.get(2).textContent !== '' && squares.get(2).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(6).textContent ) { isOver = true; return; }
 		},
 
 		/**
@@ -112,19 +111,19 @@
 		registerEventHandlers: function() {
 			var _self = this;
 			$(squares).on('click', function(e, param) {
-				_self.checkGameOver();
 				if ( !isOver ) {
 					if ( $(this).text() === '' ) { //if the square is not selected yet
-						if ( param === 'COMP' ) {
-							computerMove++;
-						} else {
-							playerMove++;
-						}
+
+						// get the index of the square clicked
+						var index = squares.index(this);
+						rowArray[index] = 1;
 
 						var response = _self.getCurrentPlayerMark(markCount);
 						$(this).css('color', response[0])
 							.addClass('filled')
 							.text(response[1]);
+
+						moveCount++;
 
 						markCount++;
 
@@ -133,17 +132,17 @@
 							setTimeout(function() {
 								_self.computerMove();
 							}, 1000);
-							computerMove++;
 						}
 					} else if ( $(this).text() !== '' ) {
 						var i = _self.determineSquare(rowArray);
 						$(squares[i]).click();
 					}
+					_self.checkGameOver();
 					if ( DEBUG ) {
 						log('click', e.target);
 					}
 				} else {
-					$('.isOver').show();
+					$('.isOver').css('visibility', 'visible');
 				}
 			});
 		},
@@ -179,12 +178,6 @@
 				success = true;
 				$(lastRowClicked.find('div')).each(function(k, v) {
 					var filled = $(this).hasClass('filled');
-
-					if ( filled ) {
-						rowArray.push(1);
-					} else {
-						rowArray.push(0);
-					}
 				});
 			}
 
