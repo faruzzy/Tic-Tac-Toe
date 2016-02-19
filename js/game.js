@@ -12,8 +12,8 @@
  */
 
 (function($) {
-	var squares = $('.row1 div, .row2 div, .row3 div');
-	var rows = $('.row1, .row2, .row3');
+	var squares = $('.column');
+	var rows = $("[class*='row']");
 	var markCount = 0;
 	var lastRowClicked;
 	var moveCount = 0;
@@ -73,7 +73,7 @@
 				}
 
 				// TODO: I see what I was thinking here 
-				// but this logic is not the best.. 
+				// but this logic is still wrong .. 
 				if ( lastRowClicked.is('.row2') ) {
 					var exclude = [3, 4, 5];
 					var i;
@@ -119,15 +119,20 @@
 						rowArray[index] = 1;
 
 						var response = _self.getCurrentPlayerMark(markCount);
-						$(this).css('color', response[0])
-							.addClass('filled')
-							.text(response[1]);
+
+						$(this).css({
+							'color': response[0],
+							'background': 'snow'
+						}) 
+						.addClass('filled')
+						.text(response[1]);
 
 						moveCount++;
 
 						markCount++;
 
 						lastRowClicked = $(this).parent();
+
 						if ( param === undefined ) { // the computer didn't initiate the move
 							setTimeout(function() {
 								_self.computerMove();
@@ -187,7 +192,7 @@
 				i = _self.select();
 			}
 
-			$(squares[i]).trigger('click', ['COMP']);
+			$(squares[i]).trigger('click');
 		},
 
 		/**
