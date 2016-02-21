@@ -2,7 +2,6 @@
  * @summary 	Tic Tac Toe
  * @description Quick and Dirty Game Implementation of the Tic Tac Toe Game
  * @version 	0.0.1
- * @file
  * @author 		Roland Pangu
  * @contact 	rolandpangu@outlook.com
  *
