@@ -12,12 +12,11 @@
  */
 
 (function($) {
-	var squares = $('.row1 div, .row2 div, .row3 div');
-	var rows = $('.row1, .row2, .row3');
+	var squares = document.querySelectorAll('.column');
+	var rows = document.querySelectorAll("[class*='row']");
 	var markCount = 0;
 	var lastRowClicked;
-	var computerMove = 0;
-	var playerMove = 0;
+	var moveCounter = 0;
 	var isOver = false;
 	var DEBUG = false;
 	var rowArray = [];
@@ -53,6 +52,7 @@
 
 			_self.electFirstPlayer();
 		},
+
 		select: function() {
 			var approach = getRandomInt(0, 1);
 			var _self = this;
@@ -74,7 +74,6 @@
 				}
 
 				if ( $(lastRowClicked[0]).is('.row2') ) {
-					return _self.determineSquare(rowArray, 0, 8);
 					var exclude = [3, 4, 5];
 					while ( exclude.indexOf(i) !== -1 ) {
 						return _self.determineSquare(rowArray, 0, 8);
@@ -86,14 +85,14 @@
 				}
 			}
 		},
+
 		/* Determines wheter the game is over
 		 * by looking at the 3 consecutive square rule
 		 */
 		checkGameOver: function() {
-			if ( $(squares[0]).text() && $(squares[1]).text() && $(squares[2]).text() ) { isOver = true; return; }
-
-			if ( $(squares[3]).text() && $(squares[4]).text() && $(squares[5]).text() ) { isOver = true; return; }
-			if ( $(squares[6]).text() && $(squares[7]).text() && $(squares[8]).text() ) { isOver = true; return; }
+			if ( squares[0].textContent !== '' && squares[0].textContent === squares[1].textContent && squares[1].textContent === squares[2].textContent ) { isOver = true; return; }
+			if ( squares[3].textContent !== '' && squares[3].textContent === squares[4].textContent && squares[4].textContent === squares[5].textContent ) { isOver = true; return; }
+			if ( squares[6].textContent !== '' && squares[6].textContent === squares[7].textContent && squares[7].textContent === squares[8].textContent ) { isOver = true; return; }
 
 			if ( $(squares[0]).text() && $(squares[3]).text() && $(squares[6]).text() ) { isOver = true; return; }
 			if ( $(squares[1]).text() && $(squares[4]).text() && $(squares[7]).text() ) { isOver =  true; return; }
@@ -101,8 +100,6 @@
 
 			if ( $(squares[0]).text() && $(squares[4]).text() && $(squares[8]).text() ) { isOver = true; return; }
 			if ( $(squares[2]).text() && $(squares[4]).text() && $(squares[6]).text() ) { isOver = true; return; }
-
-			isOver = false;
 		},
 
 		/**
@@ -115,16 +112,13 @@
 				_self.checkGameOver();
 				if ( !isOver ) {
 					if ( $(this).text() === '' ) { //if the square is not selected yet
-						if ( param === 'COMP' ) {
-							computerMove++;
-						} else {
-							playerMove++;
-						}
 
 						var response = _self.getCurrentPlayerMark(markCount);
 						$(this).css('color', response[0])
 							.addClass('filled')
 							.text(response[1]);
+
+						moveCounter++;
 
 						markCount++;
 
@@ -133,7 +127,6 @@
 							setTimeout(function() {
 								_self.computerMove();
 							}, 1000);
-							computerMove++;
 						}
 					} else if ( $(this).text() !== '' ) {
 						var i = _self.determineSquare(rowArray);
@@ -177,7 +170,7 @@
 
 			if ( lastRowClicked ) {
 				success = true;
-				$(lastRowClicked.find('div')).each(function(k, v) {
+				$(lastRowClicked.find('column')).each(function(k, v) {
 					var filled = $(this).hasClass('filled');
 
 					if ( filled ) {
@@ -194,7 +187,7 @@
 				i = _self.select();
 			}
 
-			$(squares[i]).trigger('click', ['COMP']);
+			$(squares[i]).trigger('click');
 		},
 
 		/**

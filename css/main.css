@@ -48,6 +48,8 @@ body {
 	line-height: 180px;
 }
 
-.row1 .column3Row1, .row2 .column3Row2, .row3 .column3Row3 {
+.row1 .column:last-of-type,
+.row2 .column:last-of-type,
+.row3 .column:last-of-type {
 	border-right: 1px solid gray;
 }
