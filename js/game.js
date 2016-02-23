@@ -51,6 +51,7 @@
 
 			_self.electFirstPlayer();
 		},
+
 		select: function() {
 			var approach = getRandomInt(0, 1);
 			var _self = this;
