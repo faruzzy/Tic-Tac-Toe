@@ -20,6 +20,7 @@
 	var isOver = false;
 	var DEBUG = false;
 	var rowArray = [];
+	var computerInit;
 
 	if (DEBUG) {
 		log('-------Tic Tac Toe--------');
@@ -56,31 +57,32 @@
 		select: function() {
 			var approach = getRandomInt(0, 1);
 			var _self = this;
-			if ( approach ) { // either choose to do the next move in the same row
-				if ( $(lastRowClicked[0]).is('.row1') ) {
+			if ( approach ) { // choose to do the next move in the same row
+				if ( lastRowClicked.classList.contains('row1') ) {
 					return _self.determineSquare(rowArray, 0, 2);
 				}
 
-				if ( $(lastRowClicked[0]).is('.row2') ) {
+				if ( lastRowClicked.classList.contains('row2') ) {
 					return _self.determineSquare(rowArray, 3, 5);
 				}
 
-				if ( $(lastRowClicked[0]).is('.row3') ) {
+				if ( lastRowClicked.classList.contains('row3') ) {
 					return _self.determineSquare(rowArray, 6, 8);
 				}
-			} else { // or in another row
-				if ( $(lastRowClicked[0]).is('.row1') ) {
+			} else { // choose to make move in another row
+				if ( lastRowClicked.classList.contains('row1') ) {
 					return _self.determineSquare(rowArray, 3, 8);
 				}
 
-				if ( $(lastRowClicked[0]).is('.row2') ) {
+				if ( lastRowClicked.classList.contains('row2') ) {
+					// TODO: missing "i" variable initialization
 					var exclude = [3, 4, 5];
 					while ( exclude.indexOf(i) !== -1 ) {
 						return _self.determineSquare(rowArray, 0, 8);
 					}
 				}
 
-				if ( $(lastRowClicked[0]).is('.row3') ) {
+				if ( lastRowClicked.classList.contains('row3') ) {
 					return _self.determineSquare(rowArray, 0, 5);
 				}
 			}
@@ -122,10 +124,12 @@
 							markCount++;
 
 							lastRowClicked = square.parentNode;
-							if ( param === undefined ) { // the computer didn't initiate the move
+							if ( computerInit === false ) { // the computer didn't initiate the move
 								setTimeout(function() {
 									_self.computerMove();
 								}, 1000);
+							} else {
+								computerInit = false;
 							}
 						} else if ( square.textContent !== '' ) {
 							var i = _self.determineSquare(rowArray);
@@ -154,6 +158,7 @@
 					log('Computer will start');
 				}
 			} else {
+				computerInit = false;
 				if ( DEBUG ) {
 					log('User Starts');
 				}
@@ -171,8 +176,8 @@
 			if ( lastRowClicked ) {
 				success = true;
 				var columns = lastRowClicked.querySelectorAll('.column');
-				[].forEach.call(column, function(k, v) {
-					var filled = k.classList.contains('filled');
+				[].forEach.call(columns, function(columnElement) {
+					var filled = columnElement.classList.contains('filled');
 					if ( filled ) {
 						rowArray.push(1);
 					} else {
@@ -187,6 +192,7 @@
 				i = _self.select();
 			}
 
+			computerInit = true;
 			squares[i].click();
 		},
 
