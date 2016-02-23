@@ -11,7 +11,7 @@
  * Pull requests are extremely welcome
  */
 
-(function($) {
+(function() {
 	var squares = document.querySelectorAll('.column');
 	var rows = document.querySelectorAll("[class*='row']");
 	var markCount = 0;
@@ -42,7 +42,7 @@
 		/**
 		 * Entry point of the game
 		 */
-		start: function() {
+		init: function() {
 			var _self = this ;
 			_self.registerEventHandlers();
 
@@ -94,12 +94,12 @@
 			if ( squares[3].textContent !== '' && squares[3].textContent === squares[4].textContent && squares[4].textContent === squares[5].textContent ) { isOver = true; return; }
 			if ( squares[6].textContent !== '' && squares[6].textContent === squares[7].textContent && squares[7].textContent === squares[8].textContent ) { isOver = true; return; }
 
-			if ( $(squares[0]).text() && $(squares[3]).text() && $(squares[6]).text() ) { isOver = true; return; }
-			if ( $(squares[1]).text() && $(squares[4]).text() && $(squares[7]).text() ) { isOver =  true; return; }
-			if ( $(squares[1]).text() && $(squares[4]).text() && $(squares[7]).text() ) { isOver = true; return; }
+			if ( squares[0].textContent !== '' && squares[0].textContent === squares[3].textContent && squares[3].textContent === squares[6].textContent ) { isOver = true; return; }
+			if ( squares[1].textContent !== '' && squares[1].textContent === squares[4].textContent && squares[4].textContent === squares[7].textContent ) { isOver = true; return; }
+			if ( squares[2].textContent !== '' && squares[2].textContent === squares[5].textContent && squares[5].textContent === squares[8].textContent ) { isOver = true; return; }
 
-			if ( $(squares[0]).text() && $(squares[4]).text() && $(squares[8]).text() ) { isOver = true; return; }
-			if ( $(squares[2]).text() && $(squares[4]).text() && $(squares[6]).text() ) { isOver = true; return; }
+			if ( squares[0].textContent !== '' && squares[0].textContent === squares[4].textContent && squares[4].textContent === squares[8].textContent ) { isOver = true; return; }
+			if ( squares[2].textContent !== '' && squares[2].textContent === squares[4].textContent && squares[4].textContent === squares[6].textContent ) { isOver = true; return; }
 		},
 
 		/**
@@ -108,36 +108,36 @@
 		 */
 		registerEventHandlers: function() {
 			var _self = this;
-			$(squares).on('click', function(e, param) {
-				_self.checkGameOver();
-				if ( !isOver ) {
-					if ( $(this).text() === '' ) { //if the square is not selected yet
+			[].forEach.call(squares, function(square) {
+				square.addEventListener('click', function(param) {
+					_self.checkGameOver();
+					if ( !isOver ) {
+						if ( square.textContent === '' ) { //if the square is not selected yet
+							var response = _self.getCurrentPlayerMark(markCount);
+							square.style.color = response[0];
+							square.classList.add('filled');
+							square.textContent = response[1];
 
-						var response = _self.getCurrentPlayerMark(markCount);
-						$(this).css('color', response[0])
-							.addClass('filled')
-							.text(response[1]);
+							moveCounter++;
+							markCount++;
 
-						moveCounter++;
-
-						markCount++;
-
-						lastRowClicked = $(this).parent();
-						if ( param === undefined ) { // the computer didn't initiate the move
-							setTimeout(function() {
-								_self.computerMove();
-							}, 1000);
+							lastRowClicked = square.parentNode;
+							if ( param === undefined ) { // the computer didn't initiate the move
+								setTimeout(function() {
+									_self.computerMove();
+								}, 1000);
+							}
+						} else if ( square.textContent !== '' ) {
+							var i = _self.determineSquare(rowArray);
+							squares[i].click();
 						}
-					} else if ( $(this).text() !== '' ) {
-						var i = _self.determineSquare(rowArray);
-						$(squares[i]).click();
+						if ( DEBUG ) {
+							log('click', e.target);
+						}
+					} else {
+						document.querySelector('.isOver').style.visibility = 'visible';
 					}
-					if ( DEBUG ) {
-						log('click', e.target);
-					}
-				} else {
-					$('.isOver').show();
-				}
+				}, false);
 			});
 		},
 
@@ -170,9 +170,9 @@
 
 			if ( lastRowClicked ) {
 				success = true;
-				$(lastRowClicked.find('column')).each(function(k, v) {
-					var filled = $(this).hasClass('filled');
-
+				var columns = lastRowClicked.querySelectorAll('.column');
+				[].forEach.call(column, function(k, v) {
+					var filled = k.classList.contains('filled');
 					if ( filled ) {
 						rowArray.push(1);
 					} else {
@@ -187,7 +187,7 @@
 				i = _self.select();
 			}
 
-			$(squares[i]).trigger('click');
+			squares[i].click();
 		},
 
 		/**
@@ -226,5 +226,5 @@
 		}
 	};
 
-	game.start();
-})(jQuery);
+	game.init();
+})();
