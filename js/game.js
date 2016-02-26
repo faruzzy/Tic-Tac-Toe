@@ -19,6 +19,7 @@
 	var isOver = false;
 	var DEBUG = false;
 	var rowArray = [];
+	var currentPlayer;
 
 	if (DEBUG) {
 		log('-------Tic Tac Toe--------');
@@ -92,16 +93,32 @@
 		 * by looking at the 3 consecutive square rule
 		 */
 		checkGameOver: function() {
-			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(1).textContent && squares.get(1).textContent === squares.get(2).textContent ) { isOver = true; return; }
-			if ( squares.get(3).textContent !== '' && squares.get(3).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(5).textContent ) { isOver = true; return; }
-			if ( squares.get(6).textContent !== '' && squares.get(6).textContent === squares.get(7).textContent && squares.get(7).textContent === squares.get(8).textContent ) { isOver = true; return; }
+			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(1).textContent && squares.get(1).textContent === squares.get(2).textContent ) { isOver = true; }
+			if ( squares.get(3).textContent !== '' && squares.get(3).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(5).textContent ) { isOver = true; }
+			if ( squares.get(6).textContent !== '' && squares.get(6).textContent === squares.get(7).textContent && squares.get(7).textContent === squares.get(8).textContent ) { isOver = true; }
 
-			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(3).textContent && squares.get(3).textContent === squares.get(6).textContent ) { isOver = true; return; }
-			if ( squares.get(1).textContent !== '' && squares.get(1).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(7).textContent ) { isOver = true; return; }
-			if ( squares.get(2).textContent !== '' && squares.get(2).textContent === squares.get(5).textContent && squares.get(5).textContent === squares.get(8).textContent ) { isOver = true; return; }
+			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(3).textContent && squares.get(3).textContent === squares.get(6).textContent ) { isOver = true; }
+			if ( squares.get(1).textContent !== '' && squares.get(1).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(7).textContent ) { isOver = true; }
+			if ( squares.get(2).textContent !== '' && squares.get(2).textContent === squares.get(5).textContent && squares.get(5).textContent === squares.get(8).textContent ) { isOver = true; }
 
-			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(8).textContent ) { isOver = true; return; }
-			if ( squares.get(2).textContent !== '' && squares.get(2).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(6).textContent ) { isOver = true; return; }
+			if ( squares.get(0).textContent !== '' && squares.get(0).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(8).textContent ) { isOver = true; }
+			if ( squares.get(2).textContent !== '' && squares.get(2).textContent === squares.get(4).textContent && squares.get(4).textContent === squares.get(6).textContent ) { isOver = true; }
+			
+			if ( isOver ) {
+				if ( currentPlayer === 'comp' ) {
+					$('.message').css({
+						visibility: 'visible',
+						color: 'red'
+					}).text('Game is Over, You have lost');
+				} else {
+					$('.message').css({
+						visibility: 'visible',
+						color: 'green'
+					}).text('You have won!!');
+				}
+				squares.off('click');
+			}
+				
 		},
 
 		/**
@@ -110,47 +127,44 @@
 		 */
 		registerEventHandlers: function() {
 			var _self = this;
-			$(squares).on('click', function(e, data) {
-				if ( !isOver ) {
-					if ( $(this).text() === '' ) { //if the square is not selected yet
+			squares.on('click', function(e, data) {
+				if ( $(this).text() === '' ) { //if the square is not selected yet
 
-						// get the index of the square clicked
-						var index = squares.index(this);
-						rowArray[index] = 1;
+					// get the index of the square clicked
+					var index = squares.index(this);
+					rowArray[index] = 1;
 
-						var response = _self.getCurrentPlayerMark(markCount);
+					var response = _self.getCurrentPlayerMark(markCount);
 
-						$(this).css({
-							'color': response[0],
-							'background': 'snow'
-						}) 
-						.addClass('filled')
-						.text(response[1]);
+					$(this).css({
+						'color': response[0],
+						'background': 'snow'
+					}) 
+					.addClass('filled')
+					.text(response[1]);
 
-						moveCount++;
+					moveCount++;
 
-						markCount++;
+					markCount++;
 
-						lastRowClicked = $(this).parent();
+					lastRowClicked = $(this).parent();
 
-						// the computer didn't initiate the move
-						// next move is the computer
-						if ( data === undefined ) { 
-							setTimeout(function() {
-								_self.computerMove();
-							}, 1000);
-						}
-					} else if ( $(this).text() !== '' ) {
-						var i = _self.determineSquare(rowArray);
-						$(squares[i]).click();
+					// the computer didn't initiate the move
+					// next move is the computer
+					if ( data === undefined ) { 
+						setTimeout(function() {
+							_self.computerMove();
+						}, 1000);
 					}
-					_self.checkGameOver();
-					if ( DEBUG ) {
-						log('click', e.target);
-					}
-				} else {
-					$('.isOver').css('visibility', 'visible');
+					currentPlayer = 'user';
+				} else if ( $(this).text() !== '' ) {
+					var i = _self.determineSquare(rowArray);
+					$(squares[i]).click();
 				}
+				if ( DEBUG ) {
+					log('click', e.target);
+				}
+				_self.checkGameOver();
 			});
 		},
 
@@ -179,6 +193,7 @@
 		computerMove: function() {
 			var _self = this;
 			var i = ( lastRowClicked ) ? getRandomInt(0, 8) : _self.select();
+			currentPlayer = 'comp';
 
 			$(squares[i]).trigger('click', ['COMP']);
 		},

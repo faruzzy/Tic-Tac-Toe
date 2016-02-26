@@ -21,10 +21,15 @@ body {
 	margin: 0 auto;
 }
 
+h3 {
+	margin: 0 15px;
+}
+
 .container {
 	width: 700px;
 	height: 700px;
 	margin: 0 auto;
+	background: white;
 }
 
 [class*='row'] {
