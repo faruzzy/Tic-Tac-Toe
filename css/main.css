@@ -42,7 +42,7 @@ h3 {
 	border-bottom: 1px solid gray;
 }
 
-[class*='column'] {
+[class*='cell'] {
 	width: 33.33%;
 	height: 100%;
 	border-top: 1px solid gray;
@@ -53,8 +53,8 @@ h3 {
 	line-height: 180px;
 }
 
-.row1 [class*="column"]:last-of-type, 
-.row2 [class*="column"]:last-of-type,
-.row3 [class*="column"]:last-of-type {
+.row1 [class*="cell"]:last-of-type, 
+.row2 [class*="cell"]:last-of-type,
+.row3 [class*="cell"]:last-of-type {
 	border-right: 1px solid gray;
 }
