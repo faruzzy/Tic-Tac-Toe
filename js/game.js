@@ -13,8 +13,8 @@
 	let cells;
 
 	const $ = (target) => {
-		const list = document.querySelectorAll(target);
-		return list.length > 1 ? Array.from(list) 
+		const list = [...document.querySelectorAll(target)];
+		return list.length > 1 ? list 
 			: list.length > 0 ? list[0] : list;
 	};
 
